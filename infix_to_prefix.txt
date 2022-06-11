@@ -1,0 +1,86 @@
+package parenthesis;
+
+public class Infix_Prefix {
+	public static int precedence(char Symbol)
+	{
+		switch(Symbol) {
+		case ')':
+			return 0;
+		case '+':
+		case '-':
+			return 1;
+		case '*':
+		case '/':
+		case '%':
+			return 2;
+		case '^':
+			return 3;
+		default: return 0;
+		}
+
+	}
+	public static String infix_To_Prefix(String input)
+	{
+		CharStack stack = new CharStack();
+		char pre_arr[] = new char[input.length()+1];
+		char temp_arr[] = new char [input.length()+1];
+		int p=0,tp=-1;
+		char symbol,temp;
+		for(int i=0;i<input.length();i++)
+		{
+			symbol = input.charAt(i);
+			if(symbol != 32)
+			{
+				switch(symbol) {
+				case '(':
+				case '+':
+				case '-':{
+					stack.push(symbol);
+					break;
+				}
+				case '*':
+				case '/':
+				case '%':{
+					while(!(stack.isEmpty()) && (precedence(stack.peek()) <= symbol))
+					{
+
+						stack.push(symbol);
+
+						while(!stack.isEmpty())
+						{
+							temp = stack.pop();
+							pre_arr[p++] = temp;
+						}
+					}
+					while(tp >= 0)
+					{
+						pre_arr[p++] = temp_arr[tp--];
+					}
+					break;
+				}
+
+				default:{
+					tp++;
+					temp_arr[tp] = symbol; //if (a-z) and (0-9)
+					break;                    
+				}
+
+				}//switch ends
+			}
+		}//for loop ends
+		String str = new String(pre_arr);
+		return str;
+
+	}//method ends
+
+	public static void main(String[] args) {
+
+		String Infix = new String("a+b*c");
+		System.out.println("INFIX = "+Infix);
+
+		String pre = infix_To_Prefix(Infix);
+		System.out.println("PreFix = "+pre);
+
+	}//main ends
+
+}//class ends
